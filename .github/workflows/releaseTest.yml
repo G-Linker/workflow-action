@@ -13,15 +13,20 @@ jobs:
           persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
           fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
 
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
       - name: Install Node
         uses: actions/setup-node@v3
         with:
           # https://github.com/grantit/grantit-mobile-v2/blob/staging/.nvmrc#L1
-          node-version: '14.19.3'
+          node-version: "14.19.3"
           cache: "yarn"
 
       - name: Install node_modules
         run: |
+          ruby --version
           yarn install
           yarn global add react-native-asset
 
