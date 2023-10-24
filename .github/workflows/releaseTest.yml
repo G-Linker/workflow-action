@@ -39,7 +39,7 @@ jobs:
       - name: Commit file
         run: |
           echo "console.log("auto: hell world");" > main.js
-          git config --local user.email "linkerlin@grantit.io"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add --all
           git commit -a -m "test commit"
