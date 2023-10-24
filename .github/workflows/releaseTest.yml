@@ -6,11 +6,44 @@ on:
       host:
         description: "env backend host"
         required: true
-        default: "warning"
 
 jobs:
-  printInputs:
-    runs-on: ubuntu-latest
+  release:
+    runs-on: macos-latest
+
     steps:
-      - run: |
-          echo "BACKEND_HOST: ${{ github.event.inputs.host }}"
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          # https://github.com/grantit/grantit-mobile-v2/blob/staging/.nvmrc#L1
+          version: 14.19.3
+          cache: "yarn"
+
+      - name: Install node_modules
+        run: |
+          yarn install
+          yarn global add react-native-asset
+
+      - name: Create .env files
+        run: |
+          echo $ENV | base64 -D > .env
+          echo .env
+        env:
+          ENV: ${{ secrets.ENV }}
+
+      - name: Commit file
+        run: |
+          echo "console.log("auto: hell world");" > main.js
+          git config --local user.email "linkerlin@grantit.io"
+          git config --local user.name "github-actions[bot]"
+          git add --all
+          git commit -a -m "test commit"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
