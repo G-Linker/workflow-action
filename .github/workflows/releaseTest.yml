@@ -2,10 +2,6 @@ name: Release Beta build through Fastlane on push to testing
 
 on:
   workflow_dispatch:
-    inputs:
-      host:
-        description: "env backend host"
-        required: true
 
 jobs:
   release:
