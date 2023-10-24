@@ -1,1 +1,1 @@
-console.log("hell world");
+console.log(auto-test: hell world);
