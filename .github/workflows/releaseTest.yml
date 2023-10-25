@@ -50,7 +50,7 @@ jobs:
         id: create_branch
         run: |
           COMMIT_HASH=$(git rev-parse --short HEAD)
-          BRANCH_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\/release\///')
+          BRANCH_NAME=$(echo $GITHUB_REF | awk -F'/' '{print $NF}')
           NEW_BRANCH="test/${COMMIT_HASH}-${BRANCH_NAME}"
           echo "::set-output name=new_branch::${NEW_BRANCH}"
 
