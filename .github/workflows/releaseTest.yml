@@ -39,7 +39,7 @@ jobs:
 
       - name: Commit file
         run: |
-          echo "console.log("auto-test: hell world");" > main.js
+          echo "console.log("auto-test for create pr: hell world");" > main.js
           git status
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
