@@ -47,12 +47,12 @@ jobs:
           git commit -a -m "test commit"
 
       - name: Get Commit Hash and Branch Name, Create New Branch
-        id: create_branch
+        id: create_branch_name
         run: |
           COMMIT_HASH=$(git rev-parse --short HEAD)
           BRANCH_NAME=$(echo $GITHUB_REF | awk -F'/' '{print $NF}')
           NEW_BRANCH="test/${COMMIT_HASH}-${BRANCH_NAME}"
-          echo "{new_branch}={$NEW_BRANCH}" >> $GITHUB_OUTPUT
+          echo "new_branch=$NEW_BRANCH" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
@@ -60,4 +60,4 @@ jobs:
           commit-message: Bump build version
           title: Bump build version
           body: Bump build version by github-action
-          branch: ${{ steps.create_branch.outputs.new_branch }}
+          branch: ${{ steps.create_branch_name.outputs.new_branch }}
