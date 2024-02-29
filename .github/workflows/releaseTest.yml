@@ -5,12 +5,11 @@ on:
 
 jobs:
   release:
-    runs-on: macos-13
+    runs-on: ubuntu-latest 
 
     steps:
       - uses: actions/checkout@v2
         with:
-          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
           fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
 
       - uses: ruby/setup-ruby@v1
@@ -30,12 +29,12 @@ jobs:
           yarn install
           yarn global add react-native-asset
 
-      - name: Create .env files
-        run: |
-          echo $ENV | base64 -D > .env
-          echo .env
-        env:
-          ENV: ${{ secrets.ENV }}
+      # - name: Create .env files
+      #   run: |
+      #     echo $ENV | base64 -D > .env
+      #     echo .env
+      #   env:
+      #     ENV: ${{ secrets.ENV }}
 
       - name: Commit file
         run: |
@@ -44,7 +43,7 @@ jobs:
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add --all
-          git commit -a -m "test commit"
+          git commit -a -m "test commit -> directly push"
 
       - name: Get Commit Hash and Branch Name, Create New Branch
         id: create_branch
@@ -54,10 +53,6 @@ jobs:
           NEW_BRANCH="test/${COMMIT_HASH}-${BRANCH_NAME}"
           echo "::set-output name=new_branch::${NEW_BRANCH}"
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          commit-message: Bump build version
-          title: Bump build version
-          body: Bump build version by github-action
-          branch: ${{ steps.create_branch.outputs.new_branch }}
+      - name: Push Current Branch
+        run: |
+          git push
