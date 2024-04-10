@@ -2,10 +2,15 @@ name: Release Beta build through Fastlane on push to testing
 
 on:
   workflow_dispatch:
+    inputs:
+      BACKEND_HOST:
+        description: "eg: 2XY.grantit.io"
+        required: true
+        type: string
 
 jobs:
   release:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -29,29 +34,32 @@ jobs:
           yarn install
           yarn global add react-native-asset
 
-      # - name: Create .env files
-      #   run: |
-      #     echo $ENV | base64 -D > .env
-      #     echo .env
-      #   env:
-      #     ENV: ${{ secrets.ENV }}
+      - name: Create .env and Android keystore files
+        run: |
+          echo "" > .env
+          echo $ENV_PROD | base64 -d > .env.production
+          echo "" >> .env.production
+          echo "BACKEND_HOST=${{ inputs.BACKEND_HOST }}" >> .env.production
+          cat .env.production
+        env:
+          ENV_PROD: ${{ secrets.ENV_PROD }}
 
       - name: Commit file
         run: |
-          echo "console.log("auto-test for create pr: hell world");" > main.js
+          echo "console.log('auto-test for create pr: hell world');" > main.js
           git status
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add --all
           git commit -a -m "test commit -> directly push"
 
-      - name: Get Commit Hash and Branch Name, Create New Branch
-        id: create_branch
-        run: |
-          COMMIT_HASH=$(git rev-parse --short HEAD)
-          BRANCH_NAME=$(echo $GITHUB_REF | awk -F'/' '{print $NF}')
-          NEW_BRANCH="test/${COMMIT_HASH}-${BRANCH_NAME}"
-          echo "::set-output name=new_branch::${NEW_BRANCH}"
+      # - name: Get Commit Hash and Branch Name, Create New Branch
+      #   id: create_branch
+      #   run: |
+      #     COMMIT_HASH=$(git rev-parse --short HEAD)
+      #     BRANCH_NAME=$(echo $GITHUB_REF | awk -F'/' '{print $NF}')
+      #     NEW_BRANCH="test/${COMMIT_HASH}-${BRANCH_NAME}"
+      #     echo "::set-output name=new_branch::${NEW_BRANCH}"
 
       - name: Push Current Branch
         run: |
